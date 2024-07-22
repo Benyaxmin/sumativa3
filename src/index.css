@@ -1,0 +1,31 @@
+.nota {
+    width: 200px;
+    height: 200px;
+    margin: 4rem;
+    border: 1px solid #000000;
+    padding: 10px;
+    position: relative;
+    background-color: #FFFFCC;
+    font-size: 20px;
+}
+
+.importante {
+    background-color: #EC7063;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.boton-eliminar {
+    height: min-content;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.header{
+    display: flex;
+    justify-content: center;
+}

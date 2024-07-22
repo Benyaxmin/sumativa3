@@ -1,56 +1,59 @@
-import { useRef, useState } from "react";
+import React, { useState, useCallback } from 'react';
+import Main from './main';
+import '../index.css'; // Ajusta la ruta según la ubicación del archivo CSS
 
 function Header() {
-  const titleRef = useRef();
-  const descriptionRef = useRef();
-  const importantRef = useRef();
-
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [important, setImportant] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [notas, setNotas] = useState([]);
 
-
-  const submit = (e) => {
-    console.log('Boton Submit')
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
 
-    const title = titleRef.current.value.trim();
-    const description = descriptionRef.current.value.trim();
-    const important = importantRef.current.checked;
+    if (title.trim() === '' || description.trim() === '') {
+      setMensaje('Campos vacíos');
 
-    if (!title || !description) {
-      setMensaje('Campos Vacios');
-      setTimeout(
-        () => setMensaje(''), 2000);
+      setTimeout(() => {
+        setMensaje('');
+      }, 3000);
       return;
     }
 
-    const nuevaNota = {title, description, important};
+    const nuevaNota = { title, description, important };
+
     setNotas((prevNotas) => [...prevNotas, nuevaNota]);
-    alert('Post it guardado');
+    setTitle('');
+    setDescription('');
+    setImportant(false);
+  }, [title, description, important]);
 
-    titleRef.current.value = '';
-    description.current.value= '';
-    important.current.checked = false; 
-    };
+  const handleEliminarNota = useCallback((title) => {
+    setNotas((prevNotas) => prevNotas.filter((nota) => nota.title !== title));
+  }, []);
 
-    const eliminarNota = (title) => {
-      setNotas((prevNotas) => prevNotas.filter(nota => nota.title !== title));
-      alert('Nota eliminada correctamente');
-    };
-    
   return (
     <div>
       <h1>Post It Simulator!</h1>
-      <form onSubmit={submit}>
-        <input type="text" placeholder="Titulo" className="form-text" ref={titleRef}/>
-        <input type="text" placeholder="Descripcion" className="form-text" ref={descriptionRef}/>
-        <input type="checkbox" className="form-check-input" ref={importantRef}/>
+      <form onSubmit={handleSubmit} className='header'>
+        <input type="text" placeholder="Título" className="form-text" value={title} onChange={(e) => setTitle(e.target.value)}/>
+        <input type="text" placeholder="Descripción" className="form-text" value={description} onChange={(e) => setDescription(e.target.value)}/>
+        <input type="checkbox" className="form-check-input" checked={important} onChange={(e) => setImportant(e.target.checked)}/>
         <label className="form-check-label">Important</label>
         <button type="submit" className="btn btn-success">Agregar</button>
       </form>
-      {mensaje && <div role="alert">{mensaje}</div>}
+      <div role="alert" hidden={!mensaje}>
+        {mensaje}
+      </div>
+      <div>
+        {notas.map((nota, indice) => (
+          <Main nota={nota} key={indice} EliminarNota={handleEliminarNota} />
+        ))}
+      </div>
     </div>
   );
-};
+}
 
 export default Header;
+
