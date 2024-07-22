@@ -6,7 +6,7 @@ function Header() {
   const importantRef = useRef();
 
   const [mensaje, setMensaje] = useState('');
-
+  const [notas, setNotas] = useState([]);
 
 
   const submit = (e) => {
@@ -24,9 +24,20 @@ function Header() {
       return;
     }
 
+    const nuevaNota = {title, description, important};
+    setNotas((prevNotas) => [...prevNotas, nuevaNota]);
+    alert('Post it guardado');
 
+    titleRef.current.value = '';
+    description.current.value= '';
+    important.current.checked = false; 
+    };
 
-    }
+    const eliminarNota = (title) => {
+      setNotas((prevNotas) => prevNotas.filter(nota => nota.title !== title));
+      alert('Nota eliminada correctamente');
+    };
+    
   return (
     <div>
       <h1>Post It Simulator!</h1>
